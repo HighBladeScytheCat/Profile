@@ -1,21 +1,182 @@
 <!DOCTYPE html>
-<html>
-  <link rel="style" href="style.css">
-<style>
-#grad1 {
-  height: 2000px;
-  background-image: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1));
-}
-</style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base styles for the body and canvas for full-screen coverage */
+        body {
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars if content overflows */
+            font-family: 'Inter', sans-serif;
+            background-color: black; /* Ensure background is black if image fails */
+        }
+
+        /* Custom CSS for the dark overlay on the background image */
+        .background-container {
+            background-image: url('02cf91fcc26cc2c789636acc84a0b6d6.jpeg'); /* User-provided image URL */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            position: relative; /* Needed for the pseudo-element overlay and z-indexing */
+            display: flex; /* Use flexbox to center content */
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Overlay to darken the background image */
+        .background-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay (0.6 for more darkness) */
+            z-index: 1; /* Ensure overlay is above the background image */
+        }
+
+        /* Canvas for the rain effect */
+        #rainCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* Below content but above background/overlay */
+            pointer-events: none; /* Allow clicks to pass through to elements below */
+        }
+
+        /* Ensure main content is above the overlay and rain */
+        .content-wrapper {
+            position: relative;
+            z-index: 3; /* Higher than rain canvas and background overlay */
+            padding: 1rem; /* Responsive padding */
+            width: 100%; /* Take full width */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ensure it covers full viewport height for centering */
+        }
+
+        /* Custom font for rounded appearance - Inter is generally rounded and friendly */
+        .font-rounded {
+            font-weight: 600; /* Semi-bold for a clear title */
+            letter-spacing: -0.025em; /* Slightly tighter for a modern look */
+        }
+    </style>
+    <!-- Google Fonts - Inter for a clean, modern, slightly rounded feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Canvas for the rain effect -->
+    <canvas id="rainCanvas"></canvas>
 
-<h1>Linear Gradient - Transparency</h1>
-<p>To add transparency, we use the rgba() function to define the color stops. The last parameter in the rgba() function can be a value from 0 to 1, and it defines the transparency of the color: 0 indicates full transparency, 1 indicates full color (no transparency).</p>
+    <!-- Background Container with image and dark overlay -->
+    <div class="background-container">
+        <!-- Content Wrapper to ensure z-index for the transparent box -->
+        <div class="content-wrapper">
+            <!-- Transparent Box in the middle -->
+            <div class="bg-black bg-opacity-30 backdrop-blur-sm p-8 md:p-12 rounded-xl shadow-2xl
+                        text-center max-w-lg w-full transform transition-all duration-300
+                        hover:scale-105 hover:shadow-3xl border border-gray-700">
+                <h1 class="text-4xl md:text-6xl text-white font-rounded mb-4 leading-tight">
+                    About Me
+                </h1>
+                <!-- Main descriptive text -->
+                <p class="text-white text-lg md:text-xl leading-relaxed">
+                    Welcome to my personal profile! This is a brief introduction.
+                    Feel free to explore and learn more about my journey and interests.
+                    I am passionate about technology, design, and creating engaging experiences.
+                </p>
+                <div class="mt-8">
+                    <a href="#" class="inline-block bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-gray-700 transition duration-300 transform hover:scale-105">
+                        Discover More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div id="grad1"></div>
+    <script>
+        // JavaScript for the "raining" effect
+        window.onload = function() {
+            const canvas = document.getElementById('rainCanvas');
+            const ctx = canvas.getContext('2d');
 
+            let drops = []; // Array to store individual rain drops
+            const maxDrops = 500; // Number of rain drops to render
+
+            // Function to resize canvas based on window dimensions
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            // Raindrop constructor
+            function RainDrop() {
+                this.x = Math.random() * canvas.width; // Random x position
+                this.y = Math.random() * canvas.height; // Random y position
+                this.length = Math.random() * 20 + 10; // Length of the raindrop
+                this.speed = Math.random() * 5 + 3; // Speed of the raindrop
+                this.opacity = Math.random() * 0.5 + 0.3; // Opacity for varied look
+            }
+
+            // Initialize rain drops
+            function initRain() {
+                resizeCanvas(); // Set initial canvas size
+                drops = []; // Clear existing drops
+                for (let i = 0; i < maxDrops; i++) {
+                    drops.push(new RainDrop());
+                }
+            }
+
+            // Draw a single raindrop
+            function drawDrop(drop) {
+                ctx.beginPath();
+                ctx.moveTo(drop.x, drop.y);
+                ctx.lineTo(drop.x, drop.y + drop.length);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${drop.opacity})`; // White color with varying opacity
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // Update raindrop positions and reset if they go off-screen
+            function updateRain() {
+                for (let i = 0; i < drops.length; i++) {
+                    const drop = drops[i];
+                    drop.y += drop.speed; // Move drop down
+                    if (drop.y > canvas.height) {
+                        // Reset drop to the top if it goes off-screen
+                        drop.y = -drop.length; // Start slightly above the screen
+                        drop.x = Math.random() * canvas.width; // New random x
+                        drop.speed = Math.random() * 5 + 3; // New random speed
+                        drop.opacity = Math.random() * 0.5 + 0.3; // New random opacity
+                    }
+                }
+            }
+
+            // Main animation loop
+            function animateRain() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+                for (let i = 0; i < drops.length; i++) {
+                    drawDrop(drops[i]);
+                }
+                updateRain();
+                requestAnimationFrame(animateRain); // Loop the animation
+            }
+
+            // Event listener for window resize to adjust canvas
+            window.addEventListener('resize', resizeCanvas);
+
+            // Start the rain animation
+            initRain();
+            animateRain();
+        };
+    </script>
 </body>
 </html>
-
-
