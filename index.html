@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eternity Profile</title>
+    <title>For Eternity Profile</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter for a clean, modern, slightly rounded feel -->
@@ -17,7 +17,6 @@
             overflow: hidden; /* Hide scrollbars if content overflows */
             font-family: 'Inter', sans-serif;
             background-color: black; /* Ensure background is black if image fails */
-            /* cursor: none; Removed to allow default cursor interaction */
         }
 
         /* Custom CSS for the dark overlay on the background image */
@@ -73,7 +72,7 @@
         @media (min-width: 768px) {
             .content-wrapper {
                 flex-direction: row; /* Row for medium and larger screens */
-                gap: 2rem; /* Space between the box and icons */
+                gap: 1rem; /* Reduced space between the box and icons */
             }
         }
 
@@ -107,9 +106,9 @@
         /* Social icon styling */
         .social-icons a {
             color: white;
-            font-size: 2.5rem; /* Larger icons */
+            font-size: 1.8rem; /* Smaller icons */
             transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
-            margin: 0.5rem 0; /* Vertical margin for column layout */
+            margin: 0.4rem 0; /* Vertical margin for column layout */
             display: block; /* Each icon on its own line in column layout */
         }
 
@@ -117,7 +116,7 @@
             .social-icons {
                 display: flex;
                 flex-direction: column; /* Icons stacked vertically */
-                gap: 1.5rem; /* Space between icons */
+                gap: 0.8rem; /* Reduced space between icons */
             }
             .social-icons a {
                 margin: 0; /* Remove vertical margin when in column */
@@ -132,6 +131,38 @@
         .social-icons a.github:hover { color: #6e5494; }
         .social-icons a.discord:hover { color: #7289DA; }
         .social-icons a.roblox:hover { color: #199DDB; }
+
+        /* Styles for the animated "For Eternity" title */
+        .animated-title {
+            animation: pulseTextShadow 2s infinite alternate; /* Removed moveRotate animation */
+            display: inline-block; /* Essential for transform to work */
+            text-shadow:
+                -1px -1px 0px #000, /* Black outline */
+                1px -1px 0px #000,
+                -1px 1px 0px #000,
+                1px 1px 0px #000,
+                -2px -2px 0px #8A2BE2, /* Purple outline */
+                2px -2px 0px #8A2BE2,
+                -2px 2px 0px #8A2BE2,
+                2px 2px 0px #8A2BE2;
+            padding: 0 0.5rem; /* Add some padding to prevent text shadow from being cut off */
+        }
+
+        /* No moveRotate keyframes as it's removed from animated-title */
+        @keyframes pulseTextShadow {
+            0% { text-shadow:
+                    -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000,
+                    -2px -2px 0px #8A2BE2, 2px -2px 0px #8A2BE2, -2px 2px 0px #8A2BE2, 2px 2px 0px #8A2BE2;
+            }
+            50% { text-shadow:
+                    -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000,
+                    -3px -3px 0px #BA55D3, 3px -3px 0px #BA55D3, -3px 3px 0px #BA55D3, 3px 3px 0px #BA55D3; /* Lighter purple on pulse */
+            }
+            100% { text-shadow:
+                    -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000,
+                    -2px -2px 0px #8A2BE2, 2px -2px 0px #8A2BE2, -2px 2px 0px #8A2BE2, 2px 2px 0px #8A2BE2;
+            }
+        }
     </style>
 </head>
 <body>
@@ -142,7 +173,7 @@
     <!-- Canvas for the rain effect -->
     <canvas id="rainCanvas"></canvas>
 
-    <!-- The text that follows the mouse -->
+    <!-- The text fixed at the bottom right -->
     <div id="nowPlayingText" style="display: none;">~playing Your Love is My Drug 8 Bit (slowed)</div>
 
     <!-- Background Container with image and dark overlay -->
@@ -152,15 +183,27 @@
             <!-- Transparent Box in the middle -->
             <div class="bg-black bg-opacity-30 backdrop-blur-sm p-8 md:p-12 rounded-xl shadow-2xl
                         text-center max-w-lg w-full transform transition-all duration-300
-                        hover:scale-105 hover:shadow-3xl border border-gray-700">
-                <h1 class="text-4xl md:text-6xl text-white font-rounded mb-4 leading-tight">
-                    Eternity
+                        hover:scale-105 hover:shadow-3xl border border-gray-700 flex flex-col items-center">
+                <h1 class="text-4xl md:text-6xl text-white font-rounded animated-title mb-8 leading-tight">
+                    For Eternity
                 </h1>
-                <!-- Description and button are removed as per request -->
+                <!-- Container for "Programming" and "Languages" boxes -->
+                <div class="flex flex-col items-end w-full max-w-md -mt-4"> <!-- Adjusted margin top -->
+                    <!-- "Programming" Box - now grey and packed -->
+                    <div class="bg-gray-800 bg-opacity-70 p-3 rounded-lg
+                                text-white text-xl md:text-2xl font-semibold mb-2 w-fit max-w-xs text-right">
+                        Programming
+                    </div>
+                    <!-- "Languages" Box - now grey, wide and packed -->
+                    <div class="bg-gray-800 bg-opacity-70 p-3 rounded-lg
+                                text-white text-lg md:text-xl font-medium w-full max-w-md text-right">
+                        HTML, CSS, Lua, C#, C++ and Bash
+                    </div>
+                </div>
             </div>
 
             <!-- Social Media Icons (next right to the box) -->
-            <div class="social-icons mt-8 md:mt-0 md:ml-8 flex flex-row md:flex-col justify-center items-center gap-4">
+            <div class="social-icons mt-8 md:mt-0 md:ml-4 flex flex-row md:flex-col justify-center items-center gap-2">
                 <a href="https://www.youtube.com/@scythe_cat" target="_blank" rel="noopener noreferrer" class="youtube">
                     <i class="fab fa-youtube"></i>
                 </a>
@@ -258,31 +301,15 @@
             initRain();
             animateRain();
 
-            // --- Mouse-following text functionality ---
-            const nowPlayingText = document.getElementById('nowPlayingText');
-            // Display the text after a short delay or initial user interaction
-            setTimeout(() => {
-                nowPlayingText.style.display = 'block';
-            }, 1000); // Show after 1 second
-
-            // The mousemove listener is removed to fix the text position
-            // document.addEventListener('mousemove', (e) => {
-            //     nowPlayingText.style.left = `${e.clientX}px`;
-            //     nowPlayingText.style.top = `${e.clientY}px`;
-            // });
-
             // --- Autoplay audio handling ---
             const eternalAudio = document.getElementById('eternalAudio');
             const rainAudio = document.getElementById('rainAudio');
 
             // Attempt to play audio. Modern browsers often require user interaction.
-            // These calls will work if user has already interacted with the page,
-            // or will play once interaction happens.
             eternalAudio.play().catch(e => console.log("Eternal audio autoplay blocked:", e));
             rainAudio.play().catch(e => console.log("Rain audio autoplay blocked:", e));
 
-            // Optional: If you want to ensure audio plays after ANY user interaction,
-            // you can add a listener for a click event, for example.
+            // If audio fails to autoplay, try playing on the first user click
             document.addEventListener('click', () => {
                 if (eternalAudio.paused) {
                     eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e));
