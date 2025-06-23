@@ -72,7 +72,7 @@
         @media (min-width: 768px) {
             .content-wrapper {
                 flex-direction: row; /* Row for medium and larger screens */
-                gap: 1rem; /* Reduced space between the box and icons */
+                gap: 0.5rem; /* Even more reduced space between the box and icons */
             }
         }
 
@@ -106,7 +106,7 @@
         /* Social icon styling */
         .social-icons a {
             color: white;
-            font-size: 1.8rem; /* Smaller icons */
+            font-size: 2.0rem; /* Slightly larger icons */
             transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
             margin: 0.4rem 0; /* Vertical margin for column layout */
             display: block; /* Each icon on its own line in column layout */
@@ -116,7 +116,7 @@
             .social-icons {
                 display: flex;
                 flex-direction: column; /* Icons stacked vertically */
-                gap: 0.8rem; /* Reduced space between icons */
+                gap: 0.5rem; /* Reduced space between icons */
             }
             .social-icons a {
                 margin: 0; /* Remove vertical margin when in column */
@@ -167,8 +167,8 @@
 </head>
 <body>
     <!-- Background Music -->
-    <audio id="eternalAudio" src="eternal.mp3" loop autoplay></audio>
-    <audio id="rainAudio" src="rain.mp3" loop autoplay></audio>
+    <audio id="eternalAudio" src="eternal.mp3" loop autoplay onerror="handleAudioError(this, 'eternal.mp3')"></audio>
+    <audio id="rainAudio" src="rain.mp3" loop autoplay onerror="handleAudioError(this, 'rain.mp3')"></audio>
 
     <!-- Canvas for the rain effect -->
     <canvas id="rainCanvas"></canvas>
@@ -182,28 +182,28 @@
         <div class="content-wrapper">
             <!-- Transparent Box in the middle -->
             <div class="bg-black bg-opacity-30 backdrop-blur-sm p-8 md:p-12 rounded-xl shadow-2xl
-                        text-center max-w-lg w-full transform transition-all duration-300
+                        text-center max-w-xl w-full transform transition-all duration-300
                         hover:scale-105 hover:shadow-3xl border border-gray-700 flex flex-col items-center">
                 <h1 class="text-4xl md:text-6xl text-white font-rounded animated-title mb-8 leading-tight">
                     For Eternity
                 </h1>
                 <!-- Container for "Programming" and "Languages" boxes -->
-                <div class="flex flex-col items-end w-full max-w-md -mt-4"> <!-- Adjusted margin top -->
-                    <!-- "Programming" Box - now grey and packed -->
+                <div class="flex flex-col items-start w-full max-w-md -mt-4"> <!-- Aligned to start (left) -->
+                    <!-- "Programming" Box - now grey and packed to left -->
                     <div class="bg-gray-800 bg-opacity-70 p-3 rounded-lg
-                                text-white text-xl md:text-2xl font-semibold mb-2 w-fit max-w-xs text-right">
+                                text-white text-xl md:text-2xl font-semibold mb-2 w-fit text-left">
                         Programming
                     </div>
-                    <!-- "Languages" Box - now grey, wide and packed -->
+                    <!-- "Languages" Box - now grey, wide and packed to left -->
                     <div class="bg-gray-800 bg-opacity-70 p-3 rounded-lg
-                                text-white text-lg md:text-xl font-medium w-full max-w-md text-right">
+                                text-white text-lg md:text-xl font-medium w-full text-left">
                         HTML, CSS, Lua, C#, C++ and Bash
                     </div>
                 </div>
             </div>
 
             <!-- Social Media Icons (next right to the box) -->
-            <div class="social-icons mt-8 md:mt-0 md:ml-4 flex flex-row md:flex-col justify-center items-center gap-2">
+            <div class="social-icons mt-8 md:mt-0 md:ml-3 flex flex-row md:flex-col justify-center items-center gap-1.5">
                 <a href="https://www.youtube.com/@scythe_cat" target="_blank" rel="noopener noreferrer" class="youtube">
                     <i class="fab fa-youtube"></i>
                 </a>
@@ -221,6 +221,14 @@
     </div>
 
     <script>
+        // Function to handle audio loading errors
+        function handleAudioError(audioElement, fileName) {
+            console.error(`Error loading audio file "${fileName}": The element has no supported sources. Please ensure the file exists and is a valid MP3.`);
+            // You could also update a UI element to inform the user
+            // e.g., const audioMessage = document.getElementById('audio-status');
+            // if (audioMessage) audioMessage.textContent = `Could not load audio: ${fileName}`;
+        }
+
         // JavaScript for the "raining" effect
         window.onload = function() {
             const canvas = document.getElementById('rainCanvas');
@@ -306,16 +314,18 @@
             const rainAudio = document.getElementById('rainAudio');
 
             // Attempt to play audio. Modern browsers often require user interaction.
-            eternalAudio.play().catch(e => console.log("Eternal audio autoplay blocked:", e));
-            rainAudio.play().catch(e => console.log("Rain audio autoplay blocked:", e));
+            // These calls will work if user has already interacted with the page,
+            // or will play once interaction happens.
+            eternalAudio.play().catch(e => console.log("Eternal audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
+            rainAudio.play().catch(e => console.log("Rain audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
 
             // If audio fails to autoplay, try playing on the first user click
             document.addEventListener('click', () => {
                 if (eternalAudio.paused) {
-                    eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e));
+                    eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e + " - Please ensure 'eternal.mp3' is in the same directory and is a valid MP3 file."));
                 }
                 if (rainAudio.paused) {
-                    rainAudio.play().catch(e => console.log("Rain audio play on click failed:", e));
+                    rainAudio.play().catch(e => console.log("Rain audio play on click failed:", e + " - Please ensure 'rain.mp3' is in the same directory and is a valid MP3 file."));
                 }
             }, { once: true }); // Only run this listener once
         };
