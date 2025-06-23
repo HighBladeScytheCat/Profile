@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
+    <title>Eternity Profile</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a clean, modern, slightly rounded feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for social media icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Base styles for the body and canvas for full-screen coverage */
         body {
@@ -13,11 +17,12 @@
             overflow: hidden; /* Hide scrollbars if content overflows */
             font-family: 'Inter', sans-serif;
             background-color: black; /* Ensure background is black if image fails */
+            /* cursor: none; Removed to allow default cursor interaction */
         }
 
         /* Custom CSS for the dark overlay on the background image */
         .background-container {
-            background-image: url('02cf91fcc26cc2c789636acc84a0b6d6.jpeg'); /* User-provided image URL */
+            background-image: url('02cf91fcc26cc2c789636acc84a0b6d6.jpg'); /* User-provided image URL */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -36,7 +41,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay (0.6 for more darkness) */
+            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
             z-index: 1; /* Ensure overlay is above the background image */
         }
 
@@ -58,46 +63,116 @@
             padding: 1rem; /* Responsive padding */
             width: 100%; /* Take full width */
             display: flex;
+            flex-direction: column; /* Default to column for small screens */
             justify-content: center;
             align-items: center;
             min-height: 100vh; /* Ensure it covers full viewport height for centering */
         }
 
-        /* Custom font for rounded appearance - Inter is generally rounded and friendly */
+        /* Responsive adjustment for content wrapper to row on larger screens */
+        @media (min-width: 768px) {
+            .content-wrapper {
+                flex-direction: row; /* Row for medium and larger screens */
+                gap: 2rem; /* Space between the box and icons */
+            }
+        }
+
+        /* Custom font for rounded appearance */
         .font-rounded {
             font-weight: 600; /* Semi-bold for a clear title */
             letter-spacing: -0.025em; /* Slightly tighter for a modern look */
         }
+
+        /* Styles for the "Now Playing" text fixed at the bottom right */
+        #nowPlayingText {
+            position: fixed;
+            bottom: 1rem; /* 1rem from the bottom */
+            right: 1rem; /* 1rem from the right */
+            color: white;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            pointer-events: none; /* Do not block mouse events */
+            z-index: 100; /* Ensure it's on top of everything */
+            background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent background for readability */
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            animation: fadeInOut 2s infinite alternate; /* Simple subtle animation */
+        }
+
+        @keyframes fadeInOut {
+            from { opacity: 0.7; }
+            to { opacity: 1; }
+        }
+
+        /* Social icon styling */
+        .social-icons a {
+            color: white;
+            font-size: 2.5rem; /* Larger icons */
+            transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+            margin: 0.5rem 0; /* Vertical margin for column layout */
+            display: block; /* Each icon on its own line in column layout */
+        }
+
+        @media (min-width: 768px) {
+            .social-icons {
+                display: flex;
+                flex-direction: column; /* Icons stacked vertically */
+                gap: 1.5rem; /* Space between icons */
+            }
+            .social-icons a {
+                margin: 0; /* Remove vertical margin when in column */
+            }
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.1);
+            color: #007bff; /* Example hover color (blue) */
+        }
+        .social-icons a.youtube:hover { color: #FF0000; }
+        .social-icons a.github:hover { color: #6e5494; }
+        .social-icons a.discord:hover { color: #7289DA; }
+        .social-icons a.roblox:hover { color: #199DDB; }
     </style>
-    <!-- Google Fonts - Inter for a clean, modern, slightly rounded feel -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Background Music -->
+    <audio id="eternalAudio" src="eternal.mp3" loop autoplay></audio>
+    <audio id="rainAudio" src="rain.mp3" loop autoplay></audio>
+
     <!-- Canvas for the rain effect -->
     <canvas id="rainCanvas"></canvas>
 
+    <!-- The text that follows the mouse -->
+    <div id="nowPlayingText" style="display: none;">~playing Your Love is My Drug 8 Bit (slowed)</div>
+
     <!-- Background Container with image and dark overlay -->
     <div class="background-container">
-        <!-- Content Wrapper to ensure z-index for the transparent box -->
+        <!-- Content Wrapper to ensure z-index for the transparent box and icons -->
         <div class="content-wrapper">
             <!-- Transparent Box in the middle -->
             <div class="bg-black bg-opacity-30 backdrop-blur-sm p-8 md:p-12 rounded-xl shadow-2xl
                         text-center max-w-lg w-full transform transition-all duration-300
                         hover:scale-105 hover:shadow-3xl border border-gray-700">
                 <h1 class="text-4xl md:text-6xl text-white font-rounded mb-4 leading-tight">
-                    About Me
+                    Eternity
                 </h1>
-                <!-- Main descriptive text -->
-                <p class="text-white text-lg md:text-xl leading-relaxed">
-                    Welcome to my personal profile! This is a brief introduction.
-                    Feel free to explore and learn more about my journey and interests.
-                    I am passionate about technology, design, and creating engaging experiences.
-                </p>
-                <div class="mt-8">
-                    <a href="#" class="inline-block bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-gray-700 transition duration-300 transform hover:scale-105">
-                        Discover More
-                    </a>
-                </div>
+                <!-- Description and button are removed as per request -->
+            </div>
+
+            <!-- Social Media Icons (next right to the box) -->
+            <div class="social-icons mt-8 md:mt-0 md:ml-8 flex flex-row md:flex-col justify-center items-center gap-4">
+                <a href="https://www.youtube.com/@scythe_cat" target="_blank" rel="noopener noreferrer" class="youtube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://github.com/HighBladeScytheCat" target="_blank" rel="noopener noreferrer" class="github">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://discord.com/users/1068197647355232406" target="_blank" rel="noopener noreferrer" class="discord">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <a href="https://www.roblox.com/users/2663297244" target="_blank" rel="noopener noreferrer" class="roblox">
+                    <i class="fab fa-battle-net"></i> <!-- Using battle-net as a general gaming icon, or you can find a Roblox specific icon if available in a different pack/SVG -->
+                </a>
             </div>
         </div>
     </div>
@@ -109,7 +184,13 @@
             const ctx = canvas.getContext('2d');
 
             let drops = []; // Array to store individual rain drops
-            const maxDrops = 500; // Number of rain drops to render
+            const maxDrops = 200; // Reduced number of rain drops for less intensity
+            const minLength = 8;
+            const maxLength = 18;
+            const minSpeed = 2;
+            const maxSpeed = 4;
+            const minOpacity = 0.2;
+            const maxOpacity = 0.4;
 
             // Function to resize canvas based on window dimensions
             function resizeCanvas() {
@@ -121,9 +202,9 @@
             function RainDrop() {
                 this.x = Math.random() * canvas.width; // Random x position
                 this.y = Math.random() * canvas.height; // Random y position
-                this.length = Math.random() * 20 + 10; // Length of the raindrop
-                this.speed = Math.random() * 5 + 3; // Speed of the raindrop
-                this.opacity = Math.random() * 0.5 + 0.3; // Opacity for varied look
+                this.length = Math.random() * (maxLength - minLength) + minLength; // Length of the raindrop
+                this.speed = Math.random() * (maxSpeed - minSpeed) + minSpeed; // Speed of the raindrop
+                this.opacity = Math.random() * (maxOpacity - minOpacity) + minOpacity; // Opacity for varied look
             }
 
             // Initialize rain drops
@@ -154,13 +235,13 @@
                         // Reset drop to the top if it goes off-screen
                         drop.y = -drop.length; // Start slightly above the screen
                         drop.x = Math.random() * canvas.width; // New random x
-                        drop.speed = Math.random() * 5 + 3; // New random speed
-                        drop.opacity = Math.random() * 0.5 + 0.3; // New random opacity
+                        drop.speed = Math.random() * (maxSpeed - minSpeed) + minSpeed; // New random speed
+                        drop.opacity = Math.random() * (maxOpacity - minOpacity) + minOpacity; // New random opacity
                     }
                 }
             }
 
-            // Main animation loop
+            // Main animation loop for rain
             function animateRain() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
                 for (let i = 0; i < drops.length; i++) {
@@ -176,6 +257,40 @@
             // Start the rain animation
             initRain();
             animateRain();
+
+            // --- Mouse-following text functionality ---
+            const nowPlayingText = document.getElementById('nowPlayingText');
+            // Display the text after a short delay or initial user interaction
+            setTimeout(() => {
+                nowPlayingText.style.display = 'block';
+            }, 1000); // Show after 1 second
+
+            // The mousemove listener is removed to fix the text position
+            // document.addEventListener('mousemove', (e) => {
+            //     nowPlayingText.style.left = `${e.clientX}px`;
+            //     nowPlayingText.style.top = `${e.clientY}px`;
+            // });
+
+            // --- Autoplay audio handling ---
+            const eternalAudio = document.getElementById('eternalAudio');
+            const rainAudio = document.getElementById('rainAudio');
+
+            // Attempt to play audio. Modern browsers often require user interaction.
+            // These calls will work if user has already interacted with the page,
+            // or will play once interaction happens.
+            eternalAudio.play().catch(e => console.log("Eternal audio autoplay blocked:", e));
+            rainAudio.play().catch(e => console.log("Rain audio autoplay blocked:", e));
+
+            // Optional: If you want to ensure audio plays after ANY user interaction,
+            // you can add a listener for a click event, for example.
+            document.addEventListener('click', () => {
+                if (eternalAudio.paused) {
+                    eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e));
+                }
+                if (rainAudio.paused) {
+                    rainAudio.play().catch(e => console.log("Rain audio play on click failed:", e));
+                }
+            }, { once: true }); // Only run this listener once
         };
     </script>
 </body>
