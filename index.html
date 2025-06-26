@@ -168,7 +168,6 @@
 <body>
     <!-- Background Music -->
     <audio id="eternalAudio" src="eternal.mp3" loop autoplay onerror="handleAudioError(this, 'eternal.mp3')"></audio>
-    <audio id="rainAudio" src="rain.mp3" loop autoplay onerror="handleAudioError(this, 'rain.mp3')"></audio>
 
     <!-- Canvas for the rain effect -->
     <canvas id="rainCanvas"></canvas>
@@ -323,9 +322,6 @@
             document.addEventListener('click', () => {
                 if (eternalAudio.paused) {
                     eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e + " - Please ensure 'eternal.mp3' is in the same directory and is a valid MP3 file."));
-                }
-                if (rainAudio.paused) {
-                    rainAudio.play().catch(e => console.log("Rain audio play on click failed:", e + " - Please ensure 'rain.mp3' is in the same directory and is a valid MP3 file."));
                 }
             }, { once: true }); // Only run this listener once
         };
