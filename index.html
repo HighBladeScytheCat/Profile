@@ -17,13 +17,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #000; overflow: hidden; }
+        /* Custom CSS for features not easily handled by Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000; /* Fallback background */
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        
         .animated-title {
             animation: pulseTextShadow 2s infinite alternate;
             text-shadow:
                 -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
                 -2px -2px 0 #8A2BE2, 2px -2px 0 #8A2BE2, -2px 2px 0 #8A2BE2, 2px 2px 0 #8A2BE2;
         }
+
         @keyframes pulseTextShadow {
             100% {
                 text-shadow:
@@ -31,31 +38,52 @@
                     -3px -3px 0 #BA55D3, 3px -3px 0 #BA55D3, -3px 3px 0 #BA55D3, 3px 3px 0 #BA55D3;
             }
         }
-        .now-playing-animation { animation: fadeInOut 2s infinite alternate; }
-        @keyframes fadeInOut { from { opacity: 0.7; } to { opacity: 1; } }
+        
+        .now-playing-animation {
+            animation: fadeInOut 2s infinite alternate;
+        }
+        
+        @keyframes fadeInOut {
+            from { opacity: 0.7; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 
 <body class="text-white">
 
+    <!-- Background Image and Overlay Container -->
     <div class="fixed inset-0 bg-cover bg-center -z-10" style="background-image: url('02cf91fcc26cc2c789636acc84a0b6d6.jpg')">
-      <div class="absolute inset-0 bg-black/60"></div>
+      <div class="absolute inset-0 bg-black/60"></div> <!-- Dark overlay -->
     </div>
-    
+
+    <!-- Canvas for the visual rain effect -->
     <canvas id="rainCanvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
     
-    <!-- Audio tag no longer needs `autoplay` or `muted` here. We will control it with JavaScript. -->
+    <!-- Background Music Element -->
     <audio id="eternalAudio" src="eternal.mp3" loop onerror="handleAudioError(this, 'eternal.mp3')"></audio>
 
+    <!-- Main content container -->
     <main class="relative z-10 flex items-center justify-center min-h-screen p-4">
         <div class="flex flex-col md:flex-row items-center gap-6">
-            <section class="bg-black/30 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl p-8 md:p-12 text-center max-w-xl w-full transform transition-transform duration-300 hover:scale-105">
-                <h1 class="text-4xl md:text-6xl font-bold animated-title mb-8 leading-tight">For Eternity</h1>
+
+            <!-- Profile Card -->
+            <section class="bg-black/30 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl p-8 md:p-12
+                           text-center max-w-xl w-full transform transition-transform duration-300 hover:scale-105">
+                <h1 class="text-4xl md:text-6xl font-bold animated-title mb-8 leading-tight">
+                    For Eternity
+                </h1>
                 <div class="space-y-3 text-left">
-                    <div class="bg-gray-800/70 p-3 rounded-lg text-xl md:text-2xl font-semibold w-fit">Programming</div>
-                    <div class="bg-gray-800/70 p-3 rounded-lg text-lg font-medium">HTML, CSS, Lua, C#, C++, and Bash</div>
+                    <div class="bg-gray-800/70 p-3 rounded-lg text-xl md:text-2xl font-semibold w-fit">
+                        Programming
+                    </div>
+                    <div class="bg-gray-800/70 p-3 rounded-lg text-lg font-medium">
+                        HTML, CSS, Lua, C#, C++, and Bash
+                    </div>
                 </div>
             </section>
+
+            <!-- Social Media Icons -->
             <aside class="flex flex-row md:flex-col gap-5">
                 <a href="https://www.youtube.com/@scythe_cat" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="text-4xl transition-all hover:scale-110 hover:text-[#FF0000]"><i class="fab fa-youtube"></i></a>
                 <a href="https://github.com/HighBladeScytheCat" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-4xl transition-all hover:scale-110 hover:text-[#6e5494]"><i class="fab fa-github"></i></a>
@@ -65,55 +93,96 @@
         </div>
     </main>
     
+    <!-- "Now Playing" text -->
     <footer id="nowPlayingText" class="fixed bottom-4 right-4 bg-black/50 px-3 py-1.5 rounded-lg text-sm font-light pointer-events-none now-playing-animation">
         ~playing Your Love is My Drug 8 Bit (slowed)
     </footer>
 
     <script>
+        // Function to handle audio loading errors
         function handleAudioError(audioElement, fileName) {
-            console.error(`Error loading audio: "${fileName}". Please check the file path is correct.`);
+            console.error(`Error loading audio: "${fileName}". Please check if the file path is correct.`);
         }
 
+        // Wait for the DOM to be fully loaded before running scripts
         document.addEventListener('DOMContentLoaded', () => {
         
-            // --- Visual Rain Effect (No changes here) ---
+            // --- Visual Rain Effect ---
             const canvas = document.getElementById('rainCanvas');
             const ctx = canvas.getContext('2d');
-            let drops = []; const maxDrops = 250;
-            class RainDrop { constructor() { this.reset(); this.y = Math.random() * window.innerHeight; } reset() { this.x = Math.random() * window.innerWidth; this.y = -20; this.length = Math.random() * 12 + 8; this.speed = Math.random() * 3 + 2; this.opacity = Math.random() * 0.3 + 0.2; } draw() { ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.length); ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`; ctx.lineWidth = 1.2; ctx.stroke(); } update() { this.y += this.speed; if (this.y > window.innerHeight) { this.reset(); } } }
-            function initRain() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; drops = []; for (let i = 0; i < maxDrops; i++) { drops.push(new RainDrop()); } }
-            function animateRain() { ctx.clearRect(0, 0, canvas.width, canvas.height); drops.forEach(drop => { drop.update(); drop.draw(); }); requestAnimationFrame(animateRain); }
-            window.addEventListener('resize', initRain); initRain(); animateRain();
-
-            // --- Advanced Audio Logic ---
-            const eternalAudio = document.getElementById('eternalAudio');
-
-            async function tryToPlayAudio() {
-                try {
-                    // 1. Attempt to play with sound
-                    await eternalAudio.play();
-                    console.log("Autoplay with sound was successful!");
-                } catch (error) {
-                    // 2. If it fails, the browser blocked it.
-                    console.log("Autoplay with sound was blocked. Falling back to muted autoplay.");
-                    
-                    // 3. Start the audio muted instead.
-                    eternalAudio.muted = true;
-                    eternalAudio.play();
-
-                    // 4. Set up a one-time click listener to unmute.
-                    const unmute = () => {
-                        eternalAudio.muted = false;
-                        // Remove this listener so it doesn't run again
-                        document.removeEventListener('click', unmute);
-                    };
-                    document.addEventListener('click', unmute);
+            let drops = [];
+            const maxDrops = 250;
+            
+            class RainDrop {
+                constructor() {
+                    this.reset();
+                    this.y = Math.random() * window.innerHeight;
+                }
+                reset() {
+                    this.x = Math.random() * window.innerWidth;
+                    this.y = -20;
+                    this.length = Math.random() * 12 + 8; // Length between 8 and 20
+                    this.speed = Math.random() * 3 + 2;   // Speed between 2 and 5
+                    this.opacity = Math.random() * 0.3 + 0.2; // Opacity between 0.2 and 0.5
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x, this.y + this.length);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                }
+                update() {
+                    this.y += this.speed;
+                    if (this.y > window.innerHeight) {
+                        this.reset();
+                    }
+                }
+            }
+            
+            function initRain() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                drops = [];
+                for (let i = 0; i < maxDrops; i++) {
+                    drops.push(new RainDrop());
                 }
             }
 
-            if (eternalAudio) {
-                tryToPlayAudio();
+            function animateRain() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drops.forEach(drop => {
+                    drop.update();
+                    drop.draw();
+                });
+                requestAnimationFrame(animateRain);
             }
+
+            window.addEventListener('resize', initRain);
+            initRain();
+            animateRain();
+
+            // --- Audio Playback ---
+            const eternalAudio = document.getElementById('eternalAudio');
+
+            async function playAudio() {
+                // Check if the audio element exists and is paused before trying to play
+                if (eternalAudio && eternalAudio.paused) {
+                    try {
+                        await eternalAudio.play();
+                        console.log("Music audio is playing.");
+                    } catch (e) {
+                        console.log("Music audio autoplay was blocked. Click the page to start.");
+                    }
+                }
+            }
+
+            // Attempt to play audio on load
+            playAudio();
+
+            // Fallback for browsers that block autoplay: play on first click
+            document.addEventListener('click', playAudio, { once: true });
         });
     </script>
 </body>
