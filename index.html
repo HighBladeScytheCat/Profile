@@ -4,334 +4,247 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Eternity Profile</title>
+
     <!-- Tailwind CSS CDN -->
+    <!-- Note: For a real project, it's better to install Tailwind as a build tool. -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter for a clean, modern, slightly rounded feel -->
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for social media icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
-        /* Base styles for the body and canvas for full-screen coverage */
+        /* Using a style block for things Tailwind CSS can't easily handle, like @keyframes and complex pseudo-elements. */
         body {
-            margin: 0;
-            overflow: hidden; /* Hide scrollbars if content overflows */
             font-family: 'Inter', sans-serif;
-            background-color: black; /* Ensure background is black if image fails */
+            background-color: #000; /* Fallback background */
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        
+        /* Custom pulsing text shadow animation for the main title */
+        .animated-title {
+            animation: pulseTextShadow 2s infinite alternate;
+            text-shadow:
+                /* Black outline */
+                -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
+                /* Purple glow */
+                -2px -2px 0 #8A2BE2, 2px -2px 0 #8A2BE2, -2px 2px 0 #8A2BE2, 2px 2px 0 #8A2BE2;
         }
 
-        /* Custom CSS for the dark overlay on the background image */
-        .background-container {
-            background-image: url('02cf91fcc26cc2c789636acc84a0b6d6.jpg'); /* User-provided image URL */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-            position: relative; /* Needed for the pseudo-element overlay and z-indexing */
-            display: flex; /* Use flexbox to center content */
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Overlay to darken the background image */
-        .background-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
-            z-index: 1; /* Ensure overlay is above the background image */
-        }
-
-        /* Canvas for the rain effect */
-        #rainCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2; /* Below content but above background/overlay */
-            pointer-events: none; /* Allow clicks to pass through to elements below */
-        }
-
-        /* Ensure main content is above the overlay and rain */
-        .content-wrapper {
-            position: relative;
-            z-index: 3; /* Higher than rain canvas and background overlay */
-            padding: 1rem; /* Responsive padding */
-            width: 100%; /* Take full width */
-            display: flex;
-            flex-direction: column; /* Default to column for small screens */
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* Ensure it covers full viewport height for centering */
-        }
-
-        /* Responsive adjustment for content wrapper to row on larger screens */
-        @media (min-width: 768px) {
-            .content-wrapper {
-                flex-direction: row; /* Row for medium and larger screens */
-                gap: 0.5rem; /* Even more reduced space between the box and icons */
+        @keyframes pulseTextShadow {
+            0% {
+                text-shadow:
+                    -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
+                    -2px -2px 0 #8A2BE2, 2px -2px 0 #8A2BE2, -2px 2px 0 #8A2BE2, 2px 2px 0 #8A2BE2;
+            }
+            100% {
+                text-shadow:
+                    -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
+                    /* Glow expands with a lighter purple */
+                    -3px -3px 0 #BA55D3, 3px -3px 0 #BA55D3, -3px 3px 0 #BA55D3, 3px 3px 0 #BA55D3;
             }
         }
-
-        /* Custom font for rounded appearance */
-        .font-rounded {
-            font-weight: 600; /* Semi-bold for a clear title */
-            letter-spacing: -0.025em; /* Slightly tighter for a modern look */
+        
+        /* Simple fade in/out animation for the "now playing" text */
+        .now-playing-animation {
+            animation: fadeInOut 2s infinite alternate;
         }
-
-        /* Styles for the "Now Playing" text fixed at the bottom right */
-        #nowPlayingText {
-            position: fixed;
-            bottom: 1rem; /* 1rem from the bottom */
-            right: 1rem; /* 1rem from the right */
-            color: white;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            pointer-events: none; /* Do not block mouse events */
-            z-index: 100; /* Ensure it's on top of everything */
-            background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent background for readability */
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.5rem;
-            animation: fadeInOut 2s infinite alternate; /* Simple subtle animation */
-        }
-
+        
         @keyframes fadeInOut {
             from { opacity: 0.7; }
             to { opacity: 1; }
         }
-
-        /* Social icon styling */
-        .social-icons a {
-            color: white;
-            font-size: 2.0rem; /* Slightly larger icons */
-            transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
-            margin: 0.4rem 0; /* Vertical margin for column layout */
-            display: block; /* Each icon on its own line in column layout */
-        }
-
-        @media (min-width: 768px) {
-            .social-icons {
-                display: flex;
-                flex-direction: column; /* Icons stacked vertically */
-                gap: 0.5rem; /* Reduced space between icons */
-            }
-            .social-icons a {
-                margin: 0; /* Remove vertical margin when in column */
-            }
-        }
-
-        .social-icons a:hover {
-            transform: scale(1.1);
-            color: #007bff; /* Example hover color (blue) */
-        }
-        .social-icons a.youtube:hover { color: #FF0000; }
-        .social-icons a.github:hover { color: #6e5494; }
-        .social-icons a.discord:hover { color: #7289DA; }
-        .social-icons a.roblox:hover { color: #199DDB; }
-
-        /* Styles for the animated "For Eternity" title */
-        .animated-title {
-            animation: pulseTextShadow 2s infinite alternate; /* Removed moveRotate animation */
-            display: inline-block; /* Essential for transform to work */
-            text-shadow:
-                -1px -1px 0px #000, /* Black outline */
-                1px -1px 0px #000,
-                -1px 1px 0px #000,
-                1px 1px 0px #000,
-                -2px -2px 0px #8A2BE2, /* Purple outline */
-                2px -2px 0px #8A2BE2,
-                -2px 2px 0px #8A2BE2,
-                2px 2px 0px #8A2BE2;
-            padding: 0 0.5rem; /* Add some padding to prevent text shadow from being cut off */
-        }
-
-        /* No moveRotate keyframes as it's removed from animated-title */
-        @keyframes pulseTextShadow {
-            0% { text-shadow:
-                    -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000,
-                    -2px -2px 0px #8A2BE2, 2px -2px 0px #8A2BE2, -2px 2px 0px #8A2BE2, 2px 2px 0px #8A2BE2;
-            }
-            50% { text-shadow:
-                    -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000,
-                    -3px -3px 0px #BA55D3, 3px -3px 0px #BA55D3, -3px 3px 0px #BA55D3, 3px 3px 0px #BA55D3; /* Lighter purple on pulse */
-            }
-            100% { text-shadow:
-                    -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000,
-                    -2px -2px 0px #8A2BE2, 2px -2px 0px #8A2BE2, -2px 2px 0px #8A2BE2, 2px 2px 0px #8A2BE2;
-            }
-        }
     </style>
 </head>
-<body>
-    <!-- Background Music -->
-    <audio id="eternalAudio" src="eternal.mp3" loop autoplay onerror="handleAudioError(this, 'eternal.mp3')"></audio>
-    <audio id="rainAudio" src="rain.mp3" loop autoplay onerror="handleAudioError(this, 'rain.mp3')"></audio>
-    
-    <!-- Canvas for the rain effect -->
-    <canvas id="rainCanvas"></canvas>
 
-    <!-- The text fixed at the bottom right -->
-    <div id="nowPlayingText" style="display: none;">~playing Your Love is My Drug 8 Bit (slowed)</div>
+<body class="text-white">
 
-    <!-- Background Container with image and dark overlay -->
-    <div class="background-container">
-        <!-- Content Wrapper to ensure z-index for the transparent box and icons -->
-        <div class="content-wrapper">
-            <!-- Transparent Box in the middle -->
-            <div class="bg-black bg-opacity-30 backdrop-blur-sm p-8 md:p-12 rounded-xl shadow-2xl
-                        text-center max-w-xl w-full transform transition-all duration-300
-                        hover:scale-105 hover:shadow-3xl border border-gray-700 flex flex-col items-center">
-                <h1 class="text-4xl md:text-6xl text-white font-rounded animated-title mb-8 leading-tight">
-                    For Eternity
-                </h1>
-                <!-- Container for "Programming" and "Languages" boxes -->
-                <div class="flex flex-col items-start w-full max-w-md -mt-4"> <!-- Aligned to start (left) -->
-                    <!-- "Programming" Box - now grey and packed to left -->
-                    <div class="bg-gray-800 bg-opacity-70 p-3 rounded-lg
-                                text-white text-xl md:text-2xl font-semibold mb-2 w-fit text-left">
-                        Programming
-                    </div>
-                    <!-- "Languages" Box - now grey, wide and packed to left -->
-                    <div class="bg-gray-800 bg-opacity-70 p-3 rounded-lg
-                                text-white text-lg md:text-xl font-medium w-full text-left">
-                        HTML, CSS, Lua, C#, C++ and Bash
-                    </div>
-                </div>
-            </div>
-
-            <!-- Social Media Icons (next right to the box) -->
-            <div class="social-icons mt-8 md:mt-0 md:ml-3 flex flex-row md:flex-col justify-center items-center gap-1.5">
-                <a href="https://www.youtube.com/@scythe_cat" target="_blank" rel="noopener noreferrer" class="youtube">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="https://github.com/HighBladeScytheCat" target="_blank" rel="noopener noreferrer" class="github">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="https://discord.com/users/1068197647355232406" target="_blank" rel="noopener noreferrer" class="discord">
-                    <i class="fab fa-discord"></i>
-                </a>
-                <a href="https://www.roblox.com/users/2663297244" target="_blank" rel="noopener noreferrer" class="roblox">
-                    <i class="fab fa-battle-net"></i> <!-- Using battle-net as a general gaming icon, or you can find a Roblox specific icon if available in a different pack/SVG -->
-                </a>
-            </div>
-        </div>
+    <!-- 
+      Container for the background image and the dark overlay.
+      - A pseudo-element `::before` is used for the dark overlay so content can sit on top.
+      - Using Tailwind's JIT compiler to specify the background image URL directly.
+    -->
+    <div class="fixed inset-0 bg-cover bg-center -z-10" style="background-image: url('02cf91fcc26cc2c789636acc84a0b6d6.jpg')">
+      <div class="absolute inset-0 bg-black/60"></div> <!-- Dark overlay -->
     </div>
 
+    <!-- Canvas for the rain effect. Sits on top of the background but below the main content. -->
+    <canvas id="rainCanvas" class="fixed inset-0 z-0 pointer-events-none"></canvas>
+    
+    <!-- Audio Elements. Placed here for organization. The `onerror` handler provides helpful debug messages. -->
+    <audio id="eternalAudio" src="eternal.mp3" loop onerror="handleAudioError(this, 'eternal.mp3')"></audio>
+    <audio id="rainAudio" src="rain.mp3" loop onerror="handleAudioError(this, 'rain.mp3')"></audio>
+
+    <!-- Main content container. Uses flexbox to center everything vertically and horizontally. -->
+    <main class="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div class="flex flex-col md:flex-row items-center gap-6">
+
+            <!-- Profile Card Section -->
+            <section class="bg-black/30 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl p-8 md:p-12
+                           text-center max-w-xl w-full transform transition-transform duration-300 hover:scale-105">
+
+                <h1 class="text-4xl md:text-6xl font-bold animated-title mb-8 leading-tight">
+                    For Eternity
+                </h1>
+                
+                <div class="space-y-3 text-left">
+                    <div class="bg-gray-800/70 p-3 rounded-lg text-xl md:text-2xl font-semibold w-fit">
+                        Programming
+                    </div>
+                    <div class="bg-gray-800/70 p-3 rounded-lg text-lg font-medium">
+                        HTML, CSS, Lua, C#, C++, and Bash
+                    </div>
+                </div>
+            </section>
+
+            <!-- Social Media Icons -->
+            <aside class="flex flex-row md:flex-col gap-5">
+                <a href="https://www.youtube.com/@scythe_cat" target="_blank" rel="noopener noreferrer" aria-label="YouTube"
+                   class="text-4xl transition-all hover:scale-110 hover:text-[#FF0000]">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://github.com/HighBladeScytheCat" target="_blank" rel="noopener noreferrer" aria-label="GitHub"
+                   class="text-4xl transition-all hover:scale-110 hover:text-[#6e5494]">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://discord.com/users/1068197647355232406" target="_blank" rel="noopener noreferrer" aria-label="Discord"
+                   class="text-4xl transition-all hover:scale-110 hover:text-[#7289DA]">
+                    <i class="fab fa-discord"></i>
+                </a>
+                <a href="https://www.roblox.com/users/2663297244" target="_blank" rel="noopener noreferrer" aria-label="Roblox"
+                   class="text-4xl transition-all hover:scale-110 hover:text-[#199DDB]">
+                   <!-- Correct Font Awesome icon for Roblox -->
+                    <i class="fab fa-roblox"></i>
+                </a>
+            </aside>
+
+        </div>
+    </main>
+    
+    <!-- "Now Playing" text fixed at the bottom right -->
+    <footer id="nowPlayingText" class="fixed bottom-4 right-4 bg-black/50 px-3 py-1.5 rounded-lg text-sm font-light pointer-events-none now-playing-animation">
+        ~playing Your Love is My Drug 8 Bit (slowed)
+    </footer>
+
     <script>
-        // Function to handle audio loading errors
+        // Function to handle audio loading errors (e.g., file not found)
         function handleAudioError(audioElement, fileName) {
-            console.error(`Error loading audio file "${fileName}": The element has no supported sources. Please ensure the file exists and is a valid MP3.`);
-            // You could also update a UI element to inform the user
-            // e.g., const audioMessage = document.getElementById('audio-status');
-            // if (audioMessage) audioMessage.textContent = `Could not load audio: ${fileName}`;
+            console.error(`Error loading audio: "${fileName}". Please check if the file path is correct and the file is not corrupted.`);
         }
 
-        // JavaScript for the "raining" effect
-        window.onload = function() {
+        // --- Main script logic ---
+        // We wrap everything in a 'DOMContentLoaded' event listener.
+        // This ensures that the HTML is fully loaded before the script tries to find elements.
+        document.addEventListener('DOMContentLoaded', () => {
+        
+            // --- Rain Effect ---
             const canvas = document.getElementById('rainCanvas');
             const ctx = canvas.getContext('2d');
+            
+            let drops = [];
+            const maxDrops = 250;
+            
+            // Raindrop properties
+            const rainProps = {
+                minLength: 8,
+                maxLength: 18,
+                minSpeed: 2,
+                maxSpeed: 5,
+                minOpacity: 0.2,
+                maxOpacity: 0.5,
+            };
 
-            let drops = []; // Array to store individual rain drops
-            const maxDrops = 200; // Reduced number of rain drops for less intensity
-            const minLength = 8;
-            const maxLength = 18;
-            const minSpeed = 2;
-            const maxSpeed = 4;
-            const minOpacity = 0.2;
-            const maxOpacity = 0.4;
+            class RainDrop {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.length = Math.random() * (rainProps.maxLength - rainProps.minLength) + rainProps.minLength;
+                    this.speed = Math.random() * (rainProps.maxSpeed - rainProps.minSpeed) + rainProps.minSpeed;
+                    this.opacity = Math.random() * (rainProps.maxOpacity - rainProps.minOpacity) + rainProps.minOpacity;
+                }
 
-            // Function to resize canvas based on window dimensions
-            function resizeCanvas() {
+                draw() {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x, this.y + this.length);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.lineWidth = 1.2;
+                    ctx.stroke();
+                }
+
+                update() {
+                    this.y += this.speed;
+                    // If drop goes off-screen, reset it to the top with new random properties
+                    if (this.y > canvas.height) {
+                        this.y = -this.length;
+                        this.x = Math.random() * canvas.width;
+                        this.speed = Math.random() * (rainProps.maxSpeed - rainProps.minSpeed) + rainProps.minSpeed;
+                        this.opacity = Math.random() * (rainProps.maxOpacity - rainProps.minOpacity) + rainProps.minOpacity;
+                    }
+                }
+            }
+            
+            function initRain() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-            }
-
-            // Raindrop constructor
-            function RainDrop() {
-                this.x = Math.random() * canvas.width; // Random x position
-                this.y = Math.random() * canvas.height; // Random y position
-                this.length = Math.random() * (maxLength - minLength) + minLength; // Length of the raindrop
-                this.speed = Math.random() * (maxSpeed - minSpeed) + minSpeed; // Speed of the raindrop
-                this.opacity = Math.random() * (maxOpacity - minOpacity) + minOpacity; // Opacity for varied look
-            }
-
-            // Initialize rain drops
-            function initRain() {
-                resizeCanvas(); // Set initial canvas size
-                drops = []; // Clear existing drops
+                drops = [];
                 for (let i = 0; i < maxDrops; i++) {
                     drops.push(new RainDrop());
                 }
             }
 
-            // Draw a single raindrop
-            function drawDrop(drop) {
-                ctx.beginPath();
-                ctx.moveTo(drop.x, drop.y);
-                ctx.lineTo(drop.x, drop.y + drop.length);
-                ctx.strokeStyle = `rgba(255, 255, 255, ${drop.opacity})`; // White color with varying opacity
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-
-            // Update raindrop positions and reset if they go off-screen
-            function updateRain() {
-                for (let i = 0; i < drops.length; i++) {
-                    const drop = drops[i];
-                    drop.y += drop.speed; // Move drop down
-                    if (drop.y > canvas.height) {
-                        // Reset drop to the top if it goes off-screen
-                        drop.y = -drop.length; // Start slightly above the screen
-                        drop.x = Math.random() * canvas.width; // New random x
-                        drop.speed = Math.random() * (maxSpeed - minSpeed) + minSpeed; // New random speed
-                        drop.opacity = Math.random() * (maxOpacity - minOpacity) + minOpacity; // New random opacity
-                    }
-                }
-            }
-
-            // Main animation loop for rain
             function animateRain() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-                for (let i = 0; i < drops.length; i++) {
-                    drawDrop(drops[i]);
-                }
-                updateRain();
-                requestAnimationFrame(animateRain); // Loop the animation
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drops.forEach(drop => {
+                    drop.update();
+                    drop.draw();
+                });
+                requestAnimationFrame(animateRain);
             }
 
-            // Event listener for window resize to adjust canvas
-            window.addEventListener('resize', resizeCanvas);
+            // Adjust canvas size when the window is resized
+            window.addEventListener('resize', initRain);
 
-            // Start the rain animation
+            // Start the rain
             initRain();
             animateRain();
 
-// --- Autoplay audio handling ---
-const eternalAudio = document.getElementById('eternalAudio');
-const rainAudio = document.getElementById('rainAudio');
 
-// Attempt to play audio if the elements exist
-if (eternalAudio) {
-    eternalAudio.play().catch(e => console.log("Eternal audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
-}
-if (rainAudio) {
-    rainAudio.play().catch(e => console.log("Rain audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
-}
+            // --- Audio Playback ---
+            const eternalAudio = document.getElementById('eternalAudio');
+            const rainAudio = document.getElementById('rainAudio');
 
-// If audio fails to autoplay, try playing on the first user click
-document.addEventListener('click', () => {
-    // Check if the element exists before trying to play it
-    if (eternalAudio && eternalAudio.paused) {
-        eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e));
-    }
-    if (rainAudio && rainAudio.paused) {
-        rainAudio.play().catch(e => console.log("Rain audio play on click failed:", e));
-    }
-}, { once: true }); // Only run this listener once
-        };
+            // This function attempts to play all audio.
+            // It will be called on page load and again on the first user click if needed.
+            async function playAudio() {
+                try {
+                    // We play them one by one to see individual errors if they occur
+                    await eternalAudio.play();
+                    console.log("Music audio is playing.");
+                } catch (e) {
+                    console.log("Music audio autoplay was blocked. Click the page to start.");
+                }
+                
+                try {
+                    await rainAudio.play();
+                    console.log("Rain audio is playing.");
+                } catch (e) {
+                    console.log("Rain audio autoplay was blocked. Click the page to start.");
+                }
+            }
+
+            // Attempt to play audio immediately
+            playAudio();
+
+            // If audio was blocked, this listener will try again on the first user interaction.
+            // The { once: true } option makes the listener remove itself after running once.
+            document.addEventListener('click', playAudio, { once: true });
+        });
+
     </script>
 </body>
 </html>
