@@ -309,22 +309,28 @@
             initRain();
             animateRain();
 
-            // --- Autoplay audio handling ---
-            const eternalAudio = document.getElementById('eternalAudio');
-            const rainAudio = document.getElementById('rainAudio');
+// --- Autoplay audio handling ---
+const eternalAudio = document.getElementById('eternalAudio');
+const rainAudio = document.getElementById('rainAudio');
 
-            // Attempt to play audio. Modern browsers often require user interaction.
-            // These calls will work if user has already interacted with the page,
-            // or will play once interaction happens.
-            eternalAudio.play().catch(e => console.log("Eternal audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
-            rainAudio.play().catch(e => console.log("Rain audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
+// Attempt to play audio if the elements exist
+if (eternalAudio) {
+    eternalAudio.play().catch(e => console.log("Eternal audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
+}
+if (rainAudio) {
+    rainAudio.play().catch(e => console.log("Rain audio autoplay blocked:", e + " - Click anywhere on the page to enable audio."));
+}
 
-            // If audio fails to autoplay, try playing on the first user click
-            document.addEventListener('click', () => {
-                if (eternalAudio.paused) {
-                    eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e + " - Please ensure 'eternal.mp3' is in the same directory and is a valid MP3 file."));
-                }
-            }, { once: true }); // Only run this listener once
+// If audio fails to autoplay, try playing on the first user click
+document.addEventListener('click', () => {
+    // Check if the element exists before trying to play it
+    if (eternalAudio && eternalAudio.paused) {
+        eternalAudio.play().catch(e => console.log("Eternal audio play on click failed:", e));
+    }
+    if (rainAudio && rainAudio.paused) {
+        rainAudio.play().catch(e => console.log("Rain audio play on click failed:", e));
+    }
+}, { once: true }); // Only run this listener once
         };
     </script>
 </body>
